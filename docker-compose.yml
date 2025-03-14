@@ -1,1 +1,31 @@
+services:
+  db:
+    image: k1nra/paymybuddy-db
+    container_name: paymybuddy-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_paymybuddy
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    image: k1nra/paymybuddy-backend
+    container_name: paymybuddy-backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_paymybuddy
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
 

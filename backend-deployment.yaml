@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymybuddy-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paymybuddy-backend
+  template:
+    metadata:
+      labels:
+        app: paymybuddy-backend
+    spec:
+      containers:
+        - name: paymybuddy-backend
+          image: k1nra/paymybuddy-backend
+          envFrom:
+            - configMapRef:
+                name: paymybuddy-config
+            - secretRef:
+                name: paymybuddy-secret
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymybuddy-backend
+spec:
+  selector:
+    app: paymybuddy-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+
